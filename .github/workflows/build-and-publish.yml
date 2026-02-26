@@ -21,10 +21,10 @@ jobs:
 
     steps:
       - name: Checkout exporter
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout nvtop
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: Syllo/nvtop
           path: nvtop
