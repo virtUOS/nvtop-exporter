@@ -145,6 +145,6 @@ sudo systemctl enable --now nvtop-exporter
 
 MIT
 
-## Authors
+## ✒️ Authors
 
 virtUOS, Osnabrueck University
