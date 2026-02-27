@@ -22,6 +22,7 @@ This exporter calls `nvtop -s` on each Prometheus scrape, parses the JSON output
 | `nvtop_mem_total_bytes` | Total GPU memory | Bytes |
 | `nvtop_mem_used_bytes` | Used GPU memory | Bytes |
 | `nvtop_mem_free_bytes` | Free GPU memory | Bytes |
+| `nvtop_nvidia_driver_info` | cuda version and nvidia driver version (if installed) | - |
 
 All metrics are labeled with `device` (e.g. `NVIDIA GeForce RTX 3090`).
 
@@ -42,22 +43,25 @@ nvtop_gpu_utilization_percent{device="NVIDIA GeForce RTX 3090"} 0
 nvtop_mem_clock_mhz{device="NVIDIA GeForce RTX 3090"} 405
 # HELP nvtop_mem_free_bytes Free GPU memory in bytes
 # TYPE nvtop_mem_free_bytes gauge
-nvtop_mem_free_bytes{device="NVIDIA GeForce RTX 3090"} 2.5295060992e+10
+nvtop_mem_free_bytes{device="NVIDIA GeForce RTX 3090"} 2.5305546752e+10
 # HELP nvtop_mem_total_bytes Total GPU memory in bytes
 # TYPE nvtop_mem_total_bytes gauge
 nvtop_mem_total_bytes{device="NVIDIA GeForce RTX 3090"} 2.5769803776e+10
 # HELP nvtop_mem_used_bytes Used GPU memory in bytes
 # TYPE nvtop_mem_used_bytes gauge
-nvtop_mem_used_bytes{device="NVIDIA GeForce RTX 3090"} 4.74742784e+08
+nvtop_mem_used_bytes{device="NVIDIA GeForce RTX 3090"} 4.64257024e+08
 # HELP nvtop_mem_utilization_percent Memory utilization in percent
 # TYPE nvtop_mem_utilization_percent gauge
 nvtop_mem_utilization_percent{device="NVIDIA GeForce RTX 3090"} 1
+# HELP nvtop_nvidia_driver_info NVIDIA driver and CUDA version info
+# TYPE nvtop_nvidia_driver_info gauge
+nvtop_nvidia_driver_info{cuda_version="12.8",driver_version="570.211.01"} 1
 # HELP nvtop_power_draw_watts Power draw in watts
 # TYPE nvtop_power_draw_watts gauge
-nvtop_power_draw_watts{device="NVIDIA GeForce RTX 3090"} 15
+nvtop_power_draw_watts{device="NVIDIA GeForce RTX 3090"} 14
 # HELP nvtop_temperature_celsius GPU temperature in Celsius
 # TYPE nvtop_temperature_celsius gauge
-nvtop_temperature_celsius{device="NVIDIA GeForce RTX 3090"} 38
+nvtop_temperature_celsius{device="NVIDIA GeForce RTX 3090"} 39
 ```
 
 ## 🔧 Prerequisites

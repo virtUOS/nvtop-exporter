@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"encoding/xml"
+	"fmt"
 	"log"
 	"net/http"
 	"os/exec"
@@ -28,6 +30,13 @@ type nvtopDevice struct {
 	MemFree    string `json:"mem_free"`
 }
 
+// nvidia-smi XML structures
+type nvidiaSmiLog struct {
+	XMLName       xml.Name    `xml:"nvidia_smi_log"`
+	DriverVersion string      `xml:"driver_version"`
+	CudaVersion   string      `xml:"cuda_version"`
+}
+
 // stripUnit removes known suffixes (MHz, C, %, W) and converts to float64.
 func stripUnit(s string) float64 {
 	s = strings.TrimSpace(s)
@@ -44,16 +53,17 @@ func stripUnit(s string) float64 {
 
 // nvtopCollector implements prometheus.Collector
 type nvtopCollector struct {
-	gpuClock  *prometheus.Desc
-	memClock  *prometheus.Desc
-	temp      *prometheus.Desc
-	fanSpeed  *prometheus.Desc
-	powerDraw *prometheus.Desc
-	gpuUtil   *prometheus.Desc
-	memUtil   *prometheus.Desc
-	memTotal  *prometheus.Desc
-	memUsed   *prometheus.Desc
-	memFree   *prometheus.Desc
+	gpuClock   *prometheus.Desc
+	memClock   *prometheus.Desc
+	temp       *prometheus.Desc
+	fanSpeed   *prometheus.Desc
+	powerDraw  *prometheus.Desc
+	gpuUtil    *prometheus.Desc
+	memUtil    *prometheus.Desc
+	memTotal   *prometheus.Desc
+	memUsed    *prometheus.Desc
+	memFree    *prometheus.Desc
+	driverInfo *prometheus.Desc
 }
 
 func newNvtopCollector() *nvtopCollector {
@@ -70,6 +80,11 @@ func newNvtopCollector() *nvtopCollector {
 		memTotal:  prometheus.NewDesc(ns+"_mem_total_bytes", "Total GPU memory in bytes", labels, nil),
 		memUsed:   prometheus.NewDesc(ns+"_mem_used_bytes", "Used GPU memory in bytes", labels, nil),
 		memFree:   prometheus.NewDesc(ns+"_mem_free_bytes", "Free GPU memory in bytes", labels, nil),
+		driverInfo: prometheus.NewDesc(
+			ns+"_nvidia_driver_info",
+			"NVIDIA driver and CUDA version info",
+			[]string{"driver_version", "cuda_version"}, nil,
+		),
 	}
 }
 
@@ -84,6 +99,7 @@ func (c *nvtopCollector) Describe(ch chan<- *prometheus.Desc) {
 	ch <- c.memTotal
 	ch <- c.memUsed
 	ch <- c.memFree
+	ch <- c.driverInfo
 }
 
 func (c *nvtopCollector) Collect(ch chan<- prometheus.Metric) {
@@ -106,6 +122,19 @@ func (c *nvtopCollector) Collect(ch chan<- prometheus.Metric) {
 		ch <- prometheus.MustNewConstMetric(c.memUsed, prometheus.GaugeValue, stripUnit(d.MemUsed), name)
 		ch <- prometheus.MustNewConstMetric(c.memFree, prometheus.GaugeValue, stripUnit(d.MemFree), name)
 	}
+
+	// NVIDIA-specific info metrics (best-effort, skip silently if nvidia-smi is unavailable)
+	smi, err := queryNvidiaSmi()
+	if err != nil {
+		log.Printf("info: nvidia-smi not available, skipping nvidia metrics: %v", err)
+		return
+	}
+
+	ch <- prometheus.MustNewConstMetric(
+		c.driverInfo, prometheus.GaugeValue, 1,
+		smi.DriverVersion, smi.CudaVersion,
+	)
+
 }
 
 // This needs to be done due to a bug in nvtop 3.3.1 that is fixed in 3.3.2.
@@ -130,6 +159,19 @@ func queryNvtop() ([]nvtopDevice, error) {
 		return nil, err
 	}
 	return devices, nil
+}
+
+func queryNvidiaSmi() (*nvidiaSmiLog, error) {
+	out, err := exec.Command("nvidia-smi", "-q", "-x").Output()
+	if err != nil {
+		return nil, err
+	}
+
+	var smi nvidiaSmiLog
+	if err := xml.Unmarshal(out, &smi); err != nil {
+		return nil, fmt.Errorf("xml parse error: %w", err)
+	}
+	return &smi, nil
 }
 
 func main() {
