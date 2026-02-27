@@ -1,300 +1,966 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_PROMETHEUS",
-      "label": "Prometheus",
-      "type": "datasource",
-      "pluginId": "prometheus"
-    }
-  ],
-  "title": "🖥️ GPU Monitoring - nvtop Exporter",
-  "uid": "nvtop-gpu-dashboard",
-  "editable": true,
-  "timezone": "browser",
-  "refresh": "15s",
-  "time": { "from": "now-1h", "to": "now" },
-  "templating": {
+  "annotations": {
     "list": [
       {
-        "name": "device",
-        "type": "query",
-        "datasource": { "uid": "${DS_PROMETHEUS}" },
-        "query": "label_values(nvtop_gpu_utilization_percent, device)",
-        "refresh": 2,
-        "includeAll": true,
-        "multi": true,
-        "current": { "text": "All", "value": "$__all" }
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
       }
     ]
   },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 70,
+  "links": [],
   "panels": [
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#37872D",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "virtuos-prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "nvtop_nvidia_driver_info{instance=~\"$Instance\"}",
+          "format": "time_series",
+          "instant": true,
+          "legendFormat": "{{driver_version}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "🏷️ Driver Version",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
       "id": 1,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "editorMode": "builder",
+          "expr": "nvtop_gpu_utilization_percent{instance=~\"$Instance\"}",
+          "legendFormat": "{{device}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
       "title": "🔥 GPU Utilization",
-      "type": "gauge",
-      "gridPos": { "h": 6, "w": 5, "x": 0, "y": 0 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_gpu_utilization_percent{device=~\"$device\"}",
-          "legendFormat": "{{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          }
-        }
-      }
+      "type": "gauge"
     },
     {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
       "id": 2,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_mem_utilization_percent{instance=~\"$Instance\"}",
+          "legendFormat": "{{device}}",
+          "refId": "A"
+        }
+      ],
       "title": "🧠 Memory Utilization",
-      "type": "gauge",
-      "gridPos": { "h": 6, "w": 5, "x": 5, "y": 0 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_mem_utilization_percent{device=~\"$device\"}",
-          "legendFormat": "{{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 90 }
-            ]
-          }
-        }
-      }
+      "type": "gauge"
     },
     {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 70
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "celsius"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
       "id": 3,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_temperature_celsius{instance=~\"$Instance\"}",
+          "legendFormat": "{{device}}",
+          "refId": "A"
+        }
+      ],
       "title": "🌡️ Temperature",
-      "type": "gauge",
-      "gridPos": { "h": 6, "w": 5, "x": 10, "y": 0 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_temperature_celsius{device=~\"$device\"}",
-          "legendFormat": "{{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "celsius",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 70 },
-              { "color": "red", "value": 85 }
-            ]
-          }
-        }
-      }
+      "type": "gauge"
     },
     {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 60
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 16,
+        "y": 0
+      },
       "id": 4,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_fan_speed_percent{instance=~\"$Instance\"}",
+          "legendFormat": "{{device}}",
+          "refId": "A"
+        }
+      ],
       "title": "💨 Fan Speed",
-      "type": "gauge",
-      "gridPos": { "h": 6, "w": 5, "x": 15, "y": 0 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_fan_speed_percent{device=~\"$device\"}",
-          "legendFormat": "{{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
-          "min": 0,
-          "max": 100,
-          "thresholds": {
-            "steps": [
-              { "color": "blue", "value": null },
-              { "color": "yellow", "value": 60 },
-              { "color": "red", "value": 85 }
-            ]
-          }
-        }
-      }
+      "type": "gauge"
     },
     {
-      "id": 5,
-      "title": "⚡ Power Draw",
-      "type": "gauge",
-      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 0 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_power_draw_watts{device=~\"$device\"}",
-          "legendFormat": "{{device}}"
-        }
-      ],
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "watt",
-          "min": 0,
+          "mappings": [],
           "max": 400,
-          "thresholds": {
-            "steps": [
-              { "color": "green", "value": null },
-              { "color": "yellow", "value": 250 },
-              { "color": "red", "value": 340 }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "id": 6,
-      "title": "📈 GPU Utilization Over Time",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_gpu_utilization_percent{device=~\"$device\"}",
-          "legendFormat": "GPU Util — {{device}}"
-        },
-        {
-          "expr": "nvtop_mem_utilization_percent{device=~\"$device\"}",
-          "legendFormat": "Mem Util — {{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "percent",
           "min": 0,
-          "max": 100,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 250
+              },
+              {
+                "color": "red",
+                "value": 340
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 20,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_power_draw_watts{instance=~\"$Instance\"}",
+          "legendFormat": "{{device}}",
+          "refId": "A"
+        }
+      ],
+      "title": "⚡ Power Draw",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#1F60C4",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 0,
+        "y": 3
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "virtuos-prometheus"
+          },
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "nvtop_nvidia_driver_info",
+          "format": "time_series",
+          "instant": true,
+          "legendFormat": "{{cuda_version}}",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "🧊 CUDA Version",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 15,
-            "lineWidth": 2
-          }
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
-      }
-    },
-    {
-      "id": 7,
-      "title": "🌡️ Thermals & Power Over Time",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
+      },
+      "pluginVersion": "12.3.4",
       "targets": [
         {
-          "expr": "nvtop_temperature_celsius{device=~\"$device\"}",
-          "legendFormat": "Temp — {{device}}"
+          "expr": "nvtop_gpu_utilization_percent{instance=~\"$Instance\"}",
+          "legendFormat": "GPU Util — {{device}}",
+          "refId": "A"
         },
         {
-          "expr": "nvtop_fan_speed_percent{device=~\"$device\"}",
-          "legendFormat": "Fan — {{device}}"
-        },
-        {
-          "expr": "nvtop_power_draw_watts{device=~\"$device\"}",
-          "legendFormat": "Power — {{device}}"
+          "expr": "nvtop_mem_utilization_percent{instance=~\"$Instance\"}",
+          "legendFormat": "Mem Util — {{device}}",
+          "refId": "B"
         }
       ],
+      "title": "📈 GPU Utilization Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
             "fillOpacity": 10,
-            "lineWidth": 2
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
           }
         },
         "overrides": [
           {
-            "matcher": { "id": "byRegexp", "options": "Temp" },
-            "properties": [{ "id": "unit", "value": "celsius" }]
-          },
-          {
-            "matcher": { "id": "byRegexp", "options": "Fan" },
-            "properties": [{ "id": "unit", "value": "percent" }]
-          },
-          {
-            "matcher": { "id": "byRegexp", "options": "Power" },
-            "properties": [{ "id": "unit", "value": "watt" }]
-          }
-        ]
-      }
-    },
-    {
-      "id": 8,
-      "title": "💾 Memory Usage Over Time",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
-      "targets": [
-        {
-          "expr": "nvtop_mem_used_bytes{device=~\"$device\"}",
-          "legendFormat": "Used — {{device}}"
-        },
-        {
-          "expr": "nvtop_mem_total_bytes{device=~\"$device\"}",
-          "legendFormat": "Total — {{device}}"
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {
-          "unit": "bytes",
-          "custom": {
-            "fillOpacity": 20,
-            "lineWidth": 2
-          }
-        },
-        "overrides": [
-          {
-            "matcher": { "id": "byRegexp", "options": "Total" },
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Temp"
+            },
             "properties": [
-              { "id": "custom.lineStyle", "value": { "fill": "dash", "dash": [10, 10] } },
-              { "id": "custom.fillOpacity", "value": 0 }
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Fan"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Power"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              }
             ]
           }
         ]
-      }
-    },
-    {
-      "id": 9,
-      "title": "⏱️ Clock Speeds Over Time",
-      "type": "timeseries",
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
-      "datasource": { "uid": "${DS_PROMETHEUS}" },
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.4",
       "targets": [
         {
-          "expr": "nvtop_gpu_clock_mhz{device=~\"$device\"}",
-          "legendFormat": "GPU Clock — {{device}}"
+          "expr": "nvtop_temperature_celsius{instance=~\"$Instance\"}",
+          "legendFormat": "Temp — {{device}}",
+          "refId": "A"
         },
         {
-          "expr": "nvtop_mem_clock_mhz{device=~\"$device\"}",
-          "legendFormat": "Mem Clock — {{device}}"
+          "expr": "nvtop_fan_speed_percent{instance=~\"$Instance\"}",
+          "legendFormat": "Fan — {{device}}",
+          "refId": "B"
+        },
+        {
+          "expr": "nvtop_power_draw_watts{instance=~\"$Instance\"}",
+          "legendFormat": "Power — {{device}}",
+          "refId": "C"
         }
       ],
+      "title": "🌡️ Thermals & Power Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
       "fieldConfig": {
         "defaults": {
-          "unit": "rotmhz",
+          "color": {
+            "mode": "palette-classic"
+          },
           "custom": {
-            "fillOpacity": 10,
-            "lineWidth": 2
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 20,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              }
+            ]
           }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
         }
-      }
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_mem_used_bytes{instance=~\"$Instance\"}",
+          "legendFormat": "Used — {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "nvtop_mem_total_bytes{instance=~\"$Instance\"}",
+          "legendFormat": "Total — {{device}}",
+          "refId": "B"
+        }
+      ],
+      "title": "💾 Memory Usage Over Time",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "uid": "virtuos-prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "rotmhz"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.4",
+      "targets": [
+        {
+          "expr": "nvtop_gpu_clock_mhz{instance=~\"$Instance\"}",
+          "legendFormat": "GPU Clock — {{device}}",
+          "refId": "A"
+        },
+        {
+          "expr": "nvtop_mem_clock_mhz{instance=~\"$Instance\"}",
+          "legendFormat": "Mem Clock — {{device}}",
+          "refId": "B"
+        }
+      ],
+      "title": "⏱️ Clock Speeds Over Time",
+      "type": "timeseries"
     }
   ],
-  "schemaVersion": 39
+  "preload": false,
+  "refresh": "15s",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": [
+            "vllm-test-01.virtuos.uni-osnabrueck.de:443"
+          ],
+          "value": [
+            "vllm-test-01.virtuos.uni-osnabrueck.de:443"
+          ]
+        },
+        "datasource": {
+          "uid": "virtuos-prometheus"
+        },
+        "definition": "label_values(nvtop_gpu_utilization_percent,instance)",
+        "includeAll": true,
+        "multi": true,
+        "name": "Instance",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(nvtop_gpu_utilization_percent,instance)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "🖥️ GPU Monitoring - nvtop Exporter",
+  "uid": "nvtop-gpu-dashboard",
+  "version": 4
 }
