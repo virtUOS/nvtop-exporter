@@ -35,7 +35,7 @@ jobs:
           driver: docker  # local daemon so nvtop:local is visible to exporter build
 
       - name: Build nvtop base image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: nvtop
           push: false
@@ -60,7 +60,7 @@ jobs:
             type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Build and push exporter
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
