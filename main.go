@@ -38,8 +38,13 @@ type nvidiaSmiLog struct {
 }
 
 // stripUnit removes known suffixes (MHz, C, %, W) and converts to float64.
+// Empty input is treated as 0 silently — nvtop reports null for fields the
+// device doesn't expose (e.g. fan_speed on passively-cooled server GPUs).
 func stripUnit(s string) float64 {
 	s = strings.TrimSpace(s)
+	if s == "" {
+		return 0
+	}
 	for _, suffix := range []string{"MHz", "C", "%", "W"} {
 		s = strings.TrimSuffix(s, suffix)
 	}
@@ -67,7 +72,9 @@ type nvtopCollector struct {
 }
 
 func newNvtopCollector() *nvtopCollector {
-	labels := []string{"device"}
+	// "gpu" carries the device index (0, 1, …) so multi-GPU hosts produce
+	// unique label sets even when device_name is identical across cards.
+	labels := []string{"device", "gpu"}
 	ns := "nvtop"
 	return &nvtopCollector{
 		gpuClock:  prometheus.NewDesc(ns+"_gpu_clock_mhz", "GPU clock speed in MHz", labels, nil),
@@ -109,18 +116,19 @@ func (c *nvtopCollector) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
-	for _, d := range devices {
+	for i, d := range devices {
 		name := d.DeviceName
-		ch <- prometheus.MustNewConstMetric(c.gpuClock, prometheus.GaugeValue, stripUnit(d.GPUClock), name)
-		ch <- prometheus.MustNewConstMetric(c.memClock, prometheus.GaugeValue, stripUnit(d.MemClock), name)
-		ch <- prometheus.MustNewConstMetric(c.temp, prometheus.GaugeValue, stripUnit(d.Temp), name)
-		ch <- prometheus.MustNewConstMetric(c.fanSpeed, prometheus.GaugeValue, stripUnit(d.FanSpeed), name)
-		ch <- prometheus.MustNewConstMetric(c.powerDraw, prometheus.GaugeValue, stripUnit(d.PowerDraw), name)
-		ch <- prometheus.MustNewConstMetric(c.gpuUtil, prometheus.GaugeValue, stripUnit(d.GPUUtil), name)
-		ch <- prometheus.MustNewConstMetric(c.memUtil, prometheus.GaugeValue, stripUnit(d.MemUtil), name)
-		ch <- prometheus.MustNewConstMetric(c.memTotal, prometheus.GaugeValue, stripUnit(d.MemTotal), name)
-		ch <- prometheus.MustNewConstMetric(c.memUsed, prometheus.GaugeValue, stripUnit(d.MemUsed), name)
-		ch <- prometheus.MustNewConstMetric(c.memFree, prometheus.GaugeValue, stripUnit(d.MemFree), name)
+		gpu := strconv.Itoa(i)
+		ch <- prometheus.MustNewConstMetric(c.gpuClock, prometheus.GaugeValue, stripUnit(d.GPUClock), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.memClock, prometheus.GaugeValue, stripUnit(d.MemClock), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.temp, prometheus.GaugeValue, stripUnit(d.Temp), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.fanSpeed, prometheus.GaugeValue, stripUnit(d.FanSpeed), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.powerDraw, prometheus.GaugeValue, stripUnit(d.PowerDraw), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.gpuUtil, prometheus.GaugeValue, stripUnit(d.GPUUtil), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.memUtil, prometheus.GaugeValue, stripUnit(d.MemUtil), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.memTotal, prometheus.GaugeValue, stripUnit(d.MemTotal), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.memUsed, prometheus.GaugeValue, stripUnit(d.MemUsed), name, gpu)
+		ch <- prometheus.MustNewConstMetric(c.memFree, prometheus.GaugeValue, stripUnit(d.MemFree), name, gpu)
 	}
 
 	// NVIDIA-specific info metrics (best-effort, skip silently if nvidia-smi is unavailable)
