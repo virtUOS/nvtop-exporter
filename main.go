@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -10,10 +11,16 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
+
+// commandTimeout bounds how long an external query (nvtop, nvidia-smi) may run
+// before it is killed. Without this a wedged GPU driver can hang nvidia-smi
+// indefinitely, leaking a child process and goroutine on every scrape.
+const commandTimeout = 10 * time.Second
 
 // nvtopDevice maps the JSON output of nvtop -s
 type nvtopDevice struct {
@@ -32,9 +39,9 @@ type nvtopDevice struct {
 
 // nvidia-smi XML structures
 type nvidiaSmiLog struct {
-	XMLName       xml.Name    `xml:"nvidia_smi_log"`
-	DriverVersion string      `xml:"driver_version"`
-	CudaVersion   string      `xml:"cuda_version"`
+	XMLName       xml.Name `xml:"nvidia_smi_log"`
+	DriverVersion string   `xml:"driver_version"`
+	CudaVersion   string   `xml:"cuda_version"`
 }
 
 // stripUnit removes known suffixes (MHz, C, %, W) and converts to float64.
@@ -48,6 +55,9 @@ func stripUnit(s string) float64 {
 	for _, suffix := range []string{"MHz", "C", "%", "W"} {
 		s = strings.TrimSuffix(s, suffix)
 	}
+	// Trim again: the value and unit may be space-separated (e.g. "39 C"),
+	// which would otherwise leave a trailing space that ParseFloat rejects.
+	s = strings.TrimSpace(s)
 	v, err := strconv.ParseFloat(s, 64)
 	if err != nil {
 		log.Printf("warn: could not parse %q: %v", s, err)
@@ -155,7 +165,10 @@ func sanitizeJSON(raw []byte) []byte {
 }
 
 func queryNvtop() ([]nvtopDevice, error) {
-	out, err := exec.Command("nvtop", "-s").Output()
+	ctx, cancel := context.WithTimeout(context.Background(), commandTimeout)
+	defer cancel()
+
+	out, err := exec.CommandContext(ctx, "nvtop", "-s").Output()
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +183,10 @@ func queryNvtop() ([]nvtopDevice, error) {
 }
 
 func queryNvidiaSmi() (*nvidiaSmiLog, error) {
-	out, err := exec.Command("nvidia-smi", "-q", "-x").Output()
+	ctx, cancel := context.WithTimeout(context.Background(), commandTimeout)
+	defer cancel()
+
+	out, err := exec.CommandContext(ctx, "nvidia-smi", "-q", "-x").Output()
 	if err != nil {
 		return nil, err
 	}
