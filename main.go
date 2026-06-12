@@ -208,6 +208,14 @@ func main() {
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector)
 
+	landingPage := []byte(fmt.Sprintf(`<html>
+<head><title>nvtop exporter</title></head>
+<body>
+<h1>nvtop exporter</h1>
+<p><a href="%s">Metrics</a></p>
+</body>
+</html>`, *metricsPath))
+
 	mux := http.NewServeMux()
 	mux.Handle(*metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -216,13 +224,7 @@ func main() {
 			return
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprintf(w, `<html>
-<head><title>nvtop exporter</title></head>
-<body>
-<h1>nvtop exporter</h1>
-<p><a href="%s">Metrics</a></p>
-</body>
-</html>`, *metricsPath)
+		_, _ = w.Write(landingPage) // best-effort; a write error means the client is gone
 	})
 
 	srv := &http.Server{
