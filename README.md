@@ -80,11 +80,22 @@ go build -o nvtop-exporter .
 ./nvtop-exporter
 ```
 
-The exporter listens on `127.0.0.1:9000/nvmetrics`.
+The exporter listens on `:9000/nvmetrics` (all interfaces) by default.
 
 ```bash
 curl -s localhost:9000/nvmetrics
 ```
+
+The listen address and metrics path are configurable:
+
+```bash
+./nvtop-exporter -listen-address 127.0.0.1:9100 -metrics-path /metrics
+```
+
+| Flag | Default | Description |
+|---|---|---|
+| `-listen-address` | `:9000` | host:port to listen on |
+| `-metrics-path` | `/nvmetrics` | path under which to expose metrics |
 
 ### Local Docker Image Build
 

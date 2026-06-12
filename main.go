@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -199,12 +200,40 @@ func queryNvidiaSmi() (*nvidiaSmiLog, error) {
 }
 
 func main() {
+	listenAddr := flag.String("listen-address", ":9000", "host:port to listen on")
+	metricsPath := flag.String("metrics-path", "/nvmetrics", "path under which to expose metrics")
+	flag.Parse()
+
 	collector := newNvtopCollector()
 	registry := prometheus.NewRegistry()
 	registry.MustRegister(collector)
 
-	http.Handle("/nvmetrics", promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	mux := http.NewServeMux()
+	mux.Handle(*metricsPath, promhttp.HandlerFor(registry, promhttp.HandlerOpts{}))
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprintf(w, `<html>
+<head><title>nvtop exporter</title></head>
+<body>
+<h1>nvtop exporter</h1>
+<p><a href="%s">Metrics</a></p>
+</body>
+</html>`, *metricsPath)
+	})
 
-	log.Println("nvtop exporter listening on :9000/nvmetrics")
-	log.Fatal(http.ListenAndServe("0.0.0.0:9000", nil))
+	srv := &http.Server{
+		Addr:              *listenAddr,
+		Handler:           mux,
+		ReadHeaderTimeout: 5 * time.Second,
+		// A scrape runs nvtop then nvidia-smi sequentially, each bounded by
+		// commandTimeout, so allow for both plus a margin before timing out.
+		WriteTimeout: 2*commandTimeout + 5*time.Second,
+	}
+
+	log.Printf("nvtop exporter listening on %s%s", *listenAddr, *metricsPath)
+	log.Fatal(srv.ListenAndServe())
 }
