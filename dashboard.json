@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -65,12 +65,12 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "virtuos-prometheus"
+            "uid": "prometheus"
           },
           "editorMode": "builder",
           "exemplar": false,
@@ -87,7 +87,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -137,7 +137,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "editorMode": "builder",
@@ -152,7 +152,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -202,7 +202,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_mem_utilization_percent{instance=~\"$Instance\"}",
@@ -215,7 +215,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -265,7 +265,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_temperature_celsius{instance=~\"$Instance\"}",
@@ -278,7 +278,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -328,7 +328,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_fan_speed_percent{instance=~\"$Instance\"}",
@@ -341,7 +341,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -391,7 +391,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_power_draw_watts{instance=~\"$Instance\"}",
@@ -405,7 +405,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -446,12 +446,12 @@
         "textMode": "name",
         "wideLayout": true
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "virtuos-prometheus"
+            "uid": "prometheus"
           },
           "editorMode": "builder",
           "exemplar": false,
@@ -468,7 +468,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -549,7 +549,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_gpu_utilization_percent{instance=~\"$Instance\"}",
@@ -567,7 +567,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -682,7 +682,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_temperature_celsius{instance=~\"$Instance\"}",
@@ -705,7 +705,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -807,7 +807,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_mem_used_bytes{instance=~\"$Instance\"}",
@@ -825,7 +825,7 @@
     },
     {
       "datasource": {
-        "uid": "virtuos-prometheus"
+        "uid": "prometheus"
       },
       "fieldConfig": {
         "defaults": {
@@ -904,7 +904,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.4",
+      "pluginVersion": "12.4.2",
       "targets": [
         {
           "expr": "nvtop_gpu_clock_mhz{instance=~\"$Instance\"}",
@@ -924,20 +924,19 @@
   "preload": false,
   "refresh": "15s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": ["nvtop", "nvidia"],
   "templating": {
     "list": [
       {
         "current": {
-          "text": [
-            "vllm-test-01.virtuos.uni-osnabrueck.de:443"
-          ],
+          "text": "All",
           "value": [
-            "vllm-test-01.virtuos.uni-osnabrueck.de:443"
+            "$__all"
           ]
         },
         "datasource": {
-          "uid": "virtuos-prometheus"
+          "type": "prometheus",
+          "uid": "prometheus"
         },
         "definition": "label_values(nvtop_gpu_utilization_percent,instance)",
         "includeAll": true,
@@ -950,6 +949,7 @@
           "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
+        "regexApplyTo": "value",
         "type": "query"
       }
     ]
@@ -962,5 +962,6 @@
   "timezone": "browser",
   "title": "🖥️ GPU Monitoring - nvtop Exporter",
   "uid": "nvtop-gpu-dashboard",
-  "version": 4
+  "version": 5,
+  "weekStart": ""
 }
